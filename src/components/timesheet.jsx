@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import BootstrapTable, { TableHeaderColumn } from "react-bootstrap-table-next";
+import BootstrapTable from "react-bootstrap-table-next";
+import bootstrapTable from "react-bootstrap-table-next/lib/src/bootstrap-table";
 
 const cellEditProp = {
   mode: "click",
@@ -22,31 +23,15 @@ class Timesheet extends Component {
 
   render() {
     return (
-      <BootstrapTable
-        data={this.times}
-        cellEdit={cellEditProp}
-        insertRow={true}
-      >
-        <TableHeaderColumn dataFiield="id" isKey={true}>
-          {" "}
-          ID{" "}
-        </TableHeaderColumn>
-        <TableHeaderColumn dataField="name" editable={true}>
-          Name
-        </TableHeaderColumn>
-        <TableHeaderColumn dataField="date">Date</TableHeaderColumn>
-        <TableHeaderColumn dataField="minutes">
-          Time (Minutes)
-        </TableHeaderColumn>
-        <TableHeaderColumn dataField="desp">Description</TableHeaderColumn>
-        <TableHeaderColumn dataField="total" editable={false}>
-          Total Time
-        </TableHeaderColumn>
-        <TableHeaderColumn dataField="rate">Rate</TableHeaderColumn>
-        <TableHeaderColumn dataField="cost" editable={false}>
-          Total Cost
-        </TableHeaderColumn>
-      </BootstrapTable>
+      <div className="container" style={{ marginTop: 50 }}>
+        <BootstrapTable
+          striped
+          hover
+          keyField="id"
+          data={this.times}
+          columns={this.columns}
+        />
+      </div>
     );
   }
 }
