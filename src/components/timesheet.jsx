@@ -55,8 +55,8 @@ class Timesheet extends Component {
           </TableHeaderColumn>
           <TableHeaderColumn
             dataField="date"
-            dateFormat={this.dateFormatter}
-            editable={{ type: "datetime" }}
+            editable={{ type: "date" }}
+            format={dateFormatter}
           >
             Date
           </TableHeaderColumn>
