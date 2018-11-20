@@ -53,17 +53,29 @@ class Timesheet extends Component {
           >
             Name
           </TableHeaderColumn>
-          <TableHeaderColumn dataField="date" editable={{ type: "datetime" }}>
+          <TableHeaderColumn
+            dataField="date"
+            dateFormat={this.dateFormatter}
+            editable={{ type: "datetime" }}
+          >
             Date
           </TableHeaderColumn>
-          <TableHeaderColumn dataField="minutes">
+          <TableHeaderColumn
+            dataField="minutes"
+            editable={{ type: "textarea", validator: rateValidator }}
+          >
             Time Worked (minutes)
           </TableHeaderColumn>
           <TableHeaderColumn dataField="desp">Description</TableHeaderColumn>
           <TableHeaderColumn dataField="total" hiddenOnInsert>
             Total Time Worked
           </TableHeaderColumn>
-          <TableHeaderColumn dataField="rate">Rate</TableHeaderColumn>
+          <TableHeaderColumn
+            dataField="rate"
+            editable={{ type: "textarea", validator: rateValidator }}
+          >
+            Rate
+          </TableHeaderColumn>
           <TableHeaderColumn dataField="cost" hiddenOnInsert defaultValue>
             Cost
           </TableHeaderColumn>
@@ -81,7 +93,7 @@ function dateFormatter(cell, row) {
 }
 
 function afterSave(row, cell, value) {
-  row["total"] = row["minutes"];
+  row["total"] = row["minutes"] / 60;
   row["cost"] = row["rate"] * row["total"];
 }
 
@@ -103,6 +115,26 @@ function nameValidator(value, row) {
   }
   return response;
 }
+
+function rateValidator(value, row) {
+  const response = {
+    isValid: true,
+    notification: { type: "success", msg: "", title: "" }
+  };
+  if (!value) {
+    response.isValid = false;
+    response.notification.type = "error";
+    response.notification.msg = "Value must be inserted";
+    response.notification.title = "Requested Value";
+  } else if (!/^\d+$/.test(value)) {
+    response.isValid = false;
+    response.notification.type = "error";
+    response.notification.msg = "Value can't have numbers";
+    response.notification.title = "Invalid Value";
+  }
+  return response;
+}
+
 const options = {
   afterInsertRow: afterSave,
   insertText: "Insert",
