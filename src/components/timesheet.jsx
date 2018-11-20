@@ -1,39 +1,120 @@
 import React, { Component } from "react";
-import BootstrapTable from "react-bootstrap-table-next";
-import bootstrapTable from "react-bootstrap-table-next/lib/src/bootstrap-table";
-
-const cellEditProp = {
-  mode: "click",
-  blurToSave: true
-};
+import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
+import axios from "axios";
 
 class Timesheet extends Component {
-  times = [
-    {
-      id: 1,
-      name: "Luke",
-      date: "Jan 01",
-      minutes: 120,
-      desp: "Code",
-      total: this.handleTotal,
-      rate: 10,
-      cost: 1200
+  state = {
+    times: []
+  };
+
+  onSelectAll = isSelected => {
+    if (isSelected) {
+      return this.state.times.map(row => row.id);
+    } else {
+      return [];
     }
-  ];
+  };
+
+  componentDidMount() {
+    axios.get("http://localhost:4000/data").then(response => {
+      this.setState({
+        times: response.data
+      });
+    });
+  }
 
   render() {
+    const selectRowProp = {
+      mode: "checkbox",
+      clickToSelect: true,
+      onSelectAll: this.onSelectAll
+    };
+
     return (
-      <div className="container" style={{ marginTop: 50 }}>
+      <div>
         <BootstrapTable
+          data={this.state.times}
           striped
           hover
-          keyField="id"
-          data={this.times}
-          columns={this.columns}
-        />
+          selectRow={selectRowProp}
+          pagination
+          options={options}
+          insertRow
+          deleteRow
+          cellEdit={cellEditProp}
+        >
+          <TableHeaderColumn isKey dataField="id">
+            ID
+          </TableHeaderColumn>
+          <TableHeaderColumn
+            dataField="name"
+            filter={{ type: "TextFilter" }}
+            editable={{ type: "textarea", validator: nameValidator }}
+          >
+            Name
+          </TableHeaderColumn>
+          <TableHeaderColumn dataField="date" editable={{ type: "datetime" }}>
+            Date
+          </TableHeaderColumn>
+          <TableHeaderColumn dataField="minutes">
+            Time Worked (minutes)
+          </TableHeaderColumn>
+          <TableHeaderColumn dataField="desp">Description</TableHeaderColumn>
+          <TableHeaderColumn dataField="total" hiddenOnInsert>
+            Total Time Worked
+          </TableHeaderColumn>
+          <TableHeaderColumn dataField="rate">Rate</TableHeaderColumn>
+          <TableHeaderColumn dataField="cost" hiddenOnInsert defaultValue>
+            Cost
+          </TableHeaderColumn>
+        </BootstrapTable>
       </div>
     );
   }
 }
+
+function dateFormatter(cell, row) {
+  return `${("0" + cell.getDate()).slice(-2)}/${(
+    "0" +
+    (cell.getMonth() + 1)
+  ).slice(-2)}/${cell.getFullYear()}`;
+}
+
+function afterSave(row, cell, value) {
+  row["total"] = row["minutes"];
+  row["cost"] = row["rate"] * row["total"];
+}
+
+function nameValidator(value, row) {
+  const response = {
+    isValid: true,
+    notification: { type: "success", msg: "", title: "" }
+  };
+  if (!value) {
+    response.isValid = false;
+    response.notification.type = "error";
+    response.notification.msg = "Value must be inserted";
+    response.notification.title = "Requested Value";
+  } else if (/\d/.test(value)) {
+    response.isValid = false;
+    response.notification.type = "error";
+    response.notification.msg = "Value can't have numbers";
+    response.notification.title = "Invalid Value";
+  }
+  return response;
+}
+const options = {
+  afterInsertRow: afterSave,
+  insertText: "Insert",
+  deleteText: "Delete",
+  saveText: "Save",
+  closeText: "Close"
+};
+
+const cellEditProp = {
+  mode: "dbclick",
+  blurToSave: true,
+  afterSaveCell: afterSave
+};
 
 export default Timesheet;

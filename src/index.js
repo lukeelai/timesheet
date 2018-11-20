@@ -3,8 +3,9 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import App from "./App";
 import * as serviceWorker from "./serviceWorker";
-import "bootstrap/dist/css/bootstrap.css";
-import "react-bootstrap-table/dist/react-bootstrap-table-all.min.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "../node_modules/react-bootstrap-table/dist/react-bootstrap-table-all.min.css";
+
 import Timesheet from "./components/timesheet";
 
 ReactDOM.render(<Timesheet />, document.getElementById("root"));
