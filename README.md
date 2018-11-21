@@ -16,10 +16,10 @@ You will also see any lint errors in the console.
 
 Runs the database in http://localhost:3000/data 
 
-Page doesn't show anything.
+Page doesn't show anything.<br>
 Currently has 5 base values pulled from db.json.
 
 ### `Functions`
 
-Currently able to insert rows, delete selected rows, edit cells by double clicking.
+Currently able to insert rows, delete selected rows, edit cells by double clicking.<br>
 However, unable to save the table to the database.
