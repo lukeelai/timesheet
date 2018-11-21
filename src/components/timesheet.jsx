@@ -47,6 +47,7 @@ class Timesheet extends Component {
     });
   }
 
+  // update json file and table if changes were made
   // componentDidUpdate() {
   //   axios.post("http://localhost:4000/data").then(response => {
   //     console.log(response.data);
@@ -100,7 +101,7 @@ class Timesheet extends Component {
           </TableHeaderColumn>
           <TableHeaderColumn
             dataField="hours"
-            editable={{ type: "textarea", validator: rateValidator }}
+            editable={{ type: "textarea", validator: numValidator }}
           >
             Time Worked (hours)
           </TableHeaderColumn>
@@ -114,7 +115,7 @@ class Timesheet extends Component {
           </TableHeaderColumn>
           <TableHeaderColumn
             dataField="rate"
-            editable={{ type: "textarea", validator: rateValidator }}
+            editable={{ type: "textarea", validator: numValidator }}
           >
             Rate
           </TableHeaderColumn>
@@ -131,7 +132,7 @@ let dataTable = [];
 let nameMap = {};
 let counter = 0;
 
-//get table
+//get and save table values
 function getTable() {
   axios.get("http://localhost:4000/data").then(response => {
     for (let i = 0; i < response.data.length; i++) {
@@ -153,6 +154,7 @@ function getTable() {
 //   });
 // }
 
+//delete row from json file when row is deleted
 function deleteTable() {
   axios.delete("http://localhost:4000/data").then(response => {
     console.log(response);
@@ -167,6 +169,7 @@ function dateFormatter(cell, row) {
   ).slice(-2)}/${cell.getFullYear()}`;
 }
 
+//do this after inserting row/editing row
 function afterSave(row, table) {
   getTable();
   //setTable();
@@ -175,17 +178,7 @@ function afterSave(row, table) {
   console.log(dataTable);
 }
 
-function getTotalTime() {
-  if (counter < dataTable.length) {
-  }
-  for (let i = 0; i < dataTable.length; i++) {
-    if (dataTable[i].name in nameMap) {
-      dataTable[i].hours = nameMap[dataTable[i].name];
-    }
-  }
-  console.log(nameMap);
-}
-
+//change values based on total time and cost
 function setValues(row) {
   row["cost"] = row["rate"] * row["totalTime"];
   row["totalTime"] = nameMap[row["name"]];
@@ -193,10 +186,7 @@ function setValues(row) {
   console.log(row["totalTime"]);
 }
 
-function afterDel() {
-  //delete row from map
-}
-
+//ensures name doesnt contain numbers
 function nameValidator(value, row) {
   const response = {
     isValid: true,
@@ -216,7 +206,8 @@ function nameValidator(value, row) {
   return response;
 }
 
-function rateValidator(value, row) {
+//ensure rate can only be numbers
+function numValidator(value, row) {
   const response = {
     isValid: true,
     notification: { type: "success", msg: "", title: "" }
@@ -235,15 +226,17 @@ function rateValidator(value, row) {
   return response;
 }
 
+//what to do after changes
 const options = {
   afterInsertRow: afterSave,
-  afterDeleteRow: afterDel,
+  //afterDeleteRow: deleteTable,
   insertText: "Insert",
   deleteText: "Delete",
   saveText: "Save",
   closeText: "Close"
 };
 
+//allows users to edit cells by double clicking
 const cellEditProp = {
   mode: "dbclick",
   blurToSave: true,
