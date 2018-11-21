@@ -1,12 +1,17 @@
 import React, { Component } from "react";
 import { BootstrapTable, TableHeaderColumn } from "react-bootstrap-table";
 import axios from "axios";
+import PropTypes from "prop-types";
 
 class Timesheet extends Component {
-  state = {
-    times: []
-  };
+  constructor(props) {
+    super(props);
+    this.state = {
+      times: []
+    };
+  }
 
+  // select all check box
   onSelectAll = isSelected => {
     if (isSelected) {
       return this.state.times.map(row => row.id);
@@ -15,14 +20,40 @@ class Timesheet extends Component {
     }
   };
 
+  // getTableResult = () => {
+  //   this.refs.getTableDataIgnorePaging();
+  //   console.log(this.refs.getTableDataIgnorePaging());
+  // };
+
+  // get data base file from local host
   componentDidMount() {
     axios.get("http://localhost:4000/data").then(response => {
       this.setState({
         times: response.data
       });
+
+      for (let i = 0; i < response.data.length; i++) {
+        dataTable[i] = response.data[i];
+      }
+      for (let i = 0; i < dataTable.length; i++) {
+        if (dataTable[i].name in nameMap) {
+          nameMap[dataTable[i].name] += dataTable[i].hours;
+          counter++;
+        } else {
+          nameMap[dataTable[i].name] = dataTable[i].hours;
+          counter++;
+        }
+      }
     });
   }
 
+  // componentDidUpdate() {
+  //   axios.post("http://localhost:4000/data").then(response => {
+  //     console.log(response.data);
+  //   });
+  // }
+
+  //checkboxes to select rows to delete
   render() {
     const selectRowProp = {
       mode: "checkbox",
@@ -32,6 +63,7 @@ class Timesheet extends Component {
 
     return (
       <div>
+        {/* table styling/comamands */}
         <BootstrapTable
           data={this.state.times}
           striped
@@ -43,7 +75,13 @@ class Timesheet extends Component {
           deleteRow
           cellEdit={cellEditProp}
         >
-          <TableHeaderColumn isKey dataField="id">
+          <TableHeaderColumn
+            isKey
+            dataField="id"
+            autoValue={true}
+            hiddenOnInsert
+            editable={false}
+          >
             ID
           </TableHeaderColumn>
           <TableHeaderColumn
@@ -61,13 +99,17 @@ class Timesheet extends Component {
             Date
           </TableHeaderColumn>
           <TableHeaderColumn
-            dataField="minutes"
+            dataField="hours"
             editable={{ type: "textarea", validator: rateValidator }}
           >
-            Time Worked (minutes)
+            Time Worked (hours)
           </TableHeaderColumn>
           <TableHeaderColumn dataField="desp">Description</TableHeaderColumn>
-          <TableHeaderColumn dataField="total" hiddenOnInsert>
+          <TableHeaderColumn
+            dataField="totalTime"
+            hiddenOnInsert
+            editable={false}
+          >
             Total Time Worked
           </TableHeaderColumn>
           <TableHeaderColumn
@@ -76,13 +118,46 @@ class Timesheet extends Component {
           >
             Rate
           </TableHeaderColumn>
-          <TableHeaderColumn dataField="cost" hiddenOnInsert defaultValue>
+          <TableHeaderColumn dataField="cost" hiddenOnInsert editable={false}>
             Cost
           </TableHeaderColumn>
         </BootstrapTable>
       </div>
     );
   }
+}
+
+let dataTable = [];
+let nameMap = {};
+let counter = 0;
+
+//get table
+function getTable() {
+  axios.get("http://localhost:4000/data").then(response => {
+    for (let i = 0; i < response.data.length; i++) {
+      dataTable[i] = response.data[i];
+    }
+  });
+}
+
+//update table after insert
+// Timesheet.propTypes = {};
+
+// function setTable() {
+//   axios.post("http://localhost:4000/data").then(response => {
+//     console.log(dataTable);
+//     response.data = dataTable;
+//     for (let i = dataTable.length; i <= response.data.length; i++) {
+//       //response.data[dataTable.length] = dataTable[dataTable.length];
+//     }
+//   });
+// }
+
+function deleteTable() {
+  axios.delete("http://localhost:4000/data").then(response => {
+    console.log(response);
+    console.log(response.data);
+  });
 }
 
 function dateFormatter(cell, row) {
@@ -92,9 +167,34 @@ function dateFormatter(cell, row) {
   ).slice(-2)}/${cell.getFullYear()}`;
 }
 
-function afterSave(row, cell, value) {
-  row["total"] = row["minutes"] / 60;
-  row["cost"] = row["rate"] * row["total"];
+function afterSave(row, table) {
+  getTable();
+  //setTable();
+  //setTimeout(getTotalTime(), 100);
+  setTimeout(setValues(row), 10000);
+  console.log(dataTable);
+}
+
+function getTotalTime() {
+  if (counter < dataTable.length) {
+  }
+  for (let i = 0; i < dataTable.length; i++) {
+    if (dataTable[i].name in nameMap) {
+      dataTable[i].hours = nameMap[dataTable[i].name];
+    }
+  }
+  console.log(nameMap);
+}
+
+function setValues(row) {
+  row["cost"] = row["rate"] * row["totalTime"];
+  row["totalTime"] = nameMap[row["name"]];
+  console.log(row["cost"]);
+  console.log(row["totalTime"]);
+}
+
+function afterDel() {
+  //delete row from map
 }
 
 function nameValidator(value, row) {
@@ -129,7 +229,7 @@ function rateValidator(value, row) {
   } else if (!/^\d+$/.test(value)) {
     response.isValid = false;
     response.notification.type = "error";
-    response.notification.msg = "Value can't have numbers";
+    response.notification.msg = "Value can't have letters";
     response.notification.title = "Invalid Value";
   }
   return response;
@@ -137,6 +237,7 @@ function rateValidator(value, row) {
 
 const options = {
   afterInsertRow: afterSave,
+  afterDeleteRow: afterDel,
   insertText: "Insert",
   deleteText: "Delete",
   saveText: "Save",

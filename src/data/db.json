@@ -3,52 +3,64 @@
     {
       "id": 1,
       "name": "Luke",
-      "date": "01/01/2011",
-      "minutes": 120,
+      "date": "2018-11-16",
+      "hours": 40,
       "desp": "Code",
-      "total": 120,
+      "totalTime": 40,
       "rate": 10,
-      "cost": 1200
+      "cost": 400
     },
     {
       "id": 2,
-      "name": "Mike",
-      "date": "01/01/2011",
-      "minutes": 120,
+      "name": "Luke",
+      "date": "2018-11-16",
+      "hours": 40,
       "desp": "Code",
-      "total": 120,
+      "totalTime": 40,
       "rate": 10,
-      "cost": 1200
+      "cost": 400
     },
     {
       "id": 3,
-      "name": "June",
-      "date": "01/01/2011",
-      "minutes": 120,
+      "name": "Mike",
+      "date": "2018-11-16",
+      "hours": 40,
       "desp": "Code",
-      "total": 120,
+      "totalTime": 40,
       "rate": 10,
-      "cost": 1200
+      "cost": 400
     },
     {
       "id": 4,
-      "name": "Temp",
-      "date": "01/01/2011",
-      "minutes": 120,
+      "name": "Jessica",
+      "date": "2018-11-16",
+      "hours": 40,
       "desp": "Code",
-      "total": 120,
+      "totalTime": 40,
       "rate": 10,
-      "cost": 1200
+      "cost": 400
     },
     {
       "id": 5,
-      "name": "Foo",
-      "date": "01/01/2011",
-      "minutes": 120,
+      "name": "Luke",
+      "date": "2018-11-16",
+      "hours": 40,
       "desp": "Code",
-      "total": 120,
+      "totalTime": 40,
       "rate": 10,
-      "cost": 1200
+      "cost": 400
+    },
+    {
+      "id": 6
+    },
+    {
+      "id": 7
+    },
+    {
+      "id": 8
+    },
+    {
+      "id": 9
     }
   ]
 }
