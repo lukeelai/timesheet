@@ -7,38 +7,38 @@
       "hours": 40,
       "desp": "Code",
       "totalTime": 40,
-      "rate": 10,
-      "cost": 400
+      "rate": 20,
+      "cost": 800
     },
     {
       "id": 2,
       "name": "Luke",
       "date": "2018-11-16",
-      "hours": 40,
+      "hours": 30,
       "desp": "Code",
       "totalTime": 40,
-      "rate": 10,
-      "cost": 400
+      "rate": 20,
+      "cost": 600
     },
     {
       "id": 3,
       "name": "Mike",
       "date": "2018-11-16",
       "hours": 40,
-      "desp": "Code",
+      "desp": "Finance",
       "totalTime": 40,
-      "rate": 10,
-      "cost": 400
+      "rate": 30,
+      "cost": 1200
     },
     {
       "id": 4,
       "name": "Jessica",
       "date": "2018-11-16",
       "hours": 40,
-      "desp": "Code",
+      "desp": "HR",
       "totalTime": 40,
-      "rate": 10,
-      "cost": 400
+      "rate": 15,
+      "cost": 600
     },
     {
       "id": 5,
@@ -47,8 +47,8 @@
       "hours": 40,
       "desp": "Code",
       "totalTime": 40,
-      "rate": 10,
-      "cost": 400
+      "rate": 20,
+      "cost": 800
     }
   ]
 }
